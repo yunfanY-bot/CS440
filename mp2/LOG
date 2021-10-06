@@ -1,0 +1,10 @@
+pygame 2.0.1 (SDL 2.0.14, Python 3.8.1)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Results 
+{
+    path length         : 6
+    states explored     : 20
+    total execution time: 0.00 seconds
+}
+            

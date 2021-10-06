@@ -21,10 +21,29 @@ This file contains search functions.
 from collections import deque
 from heapq import heappop, heappush
 
+
 def search(maze, searchMethod):
     return {
         "bfs": bfs,
     }.get(searchMethod, [])(maze)
+
+
+'''
+traceback parent
+'''
+
+
+def traceback(parent,end,start):
+    toreturn = []
+    cur = end
+    while not(cur == start):
+        toreturn.insert(0,cur)
+        cur = parent.get(cur,0)
+        if cur == 0:
+            break
+    toreturn.insert(0,start)
+    return toreturn
+
 
 def bfs(maze, ispart1=False):
     # Write your code here
@@ -36,4 +55,22 @@ def bfs(maze, ispart1=False):
         maze: Maze instance from maze.py
         ispart1: pass this variable when you use functions such as getNeighbors and isObjective. DO NOT MODIFY THIS
     """
-    return []
+    q = []
+    visited = []
+    parent = {}
+    start = maze.getStart()
+    q.append(start)
+    visited.append(start)
+    while q:
+        cur = q.pop(0)
+        if maze.isObjective(cur[0], cur[1], cur[2], ispart1):
+            return traceback(parent,cur,start)
+        neighbours = maze.getNeighbors(cur[0], cur[1], cur[2], ispart1)
+        for each in neighbours:
+            if each in visited:
+                continue
+            else:
+                q.append(each)
+                visited.append(each)
+                parent[each] = cur
+    return None
