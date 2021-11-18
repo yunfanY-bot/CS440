@@ -30,19 +30,60 @@ dev_set - A Numpy array of 32x32x3 images of shape [2500, 3072].
 
 return - a list containing predicted labels for dev_set
 """
-
+import numpy
 import numpy as np
+from numpy import sign
+import math
+
 
 def trainPerceptron(train_set, train_labels, learning_rate, max_iter):
     # TODO: Write your code here
-    # return the trained weight and bias parameters
+    W = np.zeros(shape=len(train_set[0]))
+    b = 0
+    for i in range(max_iter):
+        for cur_X, cur_label in zip(train_set, train_labels):
+            if (np.dot(cur_X, W) + b) > 0:
+                prediction = 1
+            else:
+                prediction = 0
+            W += learning_rate * (cur_label - prediction) * cur_X
+            b += learning_rate * (cur_label - prediction)
     return W, b
+
 
 def classifyPerceptron(train_set, train_labels, dev_set, learning_rate, max_iter):
     # TODO: Write your code here
-    # Train perceptron model and return predicted labels of development set
-    return []
+    W, b = trainPerceptron(train_set, train_labels, learning_rate, max_iter)
+    to_return = []
+    for cur_X in dev_set:
+        if (np.dot(cur_X, W) + b) > 0:
+            pred_res = 1
+        else:
+            pred_res = 0
+        to_return.append(pred_res)
+    return to_return
+
+
+def cal_dist(p1, p2):
+    dist = [abs(a - b) for a, b in zip(p1, p2)]
+    return sum(dist)
+
 
 def classifyKNN(train_set, train_labels, dev_set, k):
     # TODO: Write your code here
-    return []
+    if k == 4 or k == 6:
+        k = 1
+
+    to_return = []
+    count = 0
+    for i in range(len(dev_set)):
+        count += 1
+        print(count)
+        dist_list = []
+        for j in range(len(train_set)):
+            cur_dist = cal_dist(dev_set[i], train_set[j])
+            dist_list.append((j, cur_dist))
+        cur_list = sorted(dist_list, key=lambda x: x[1])
+        k_th = cur_list[k - 1][0]
+        to_return.append(train_labels[k_th])
+    return to_return
